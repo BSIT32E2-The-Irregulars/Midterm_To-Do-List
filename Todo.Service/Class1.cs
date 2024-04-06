@@ -9,7 +9,11 @@ public interface ITodoService
     IEnumerable<TodoModel> GetAll();
     Task<int> Add(AddTodoModel model);
     Task<int> UpdateDescription(int id, string description);
-    
+
+    Task<IEnumerable<Category>> GetCategories();
+    Task<IEnumerable<Status>> GetStatuses();
+
+
 }
 
 public record TodoModel

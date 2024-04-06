@@ -64,8 +64,8 @@ namespace Todolist.Controllers
         [HttpGet]
         public IActionResult Add()
         {
-            ViewBag.Categories = service.
-            ViewBag.Statuses = service.Statuses.ToList();
+            ViewBag.Categories = service.GetCategories().Result;
+            ViewBag.Statuses = service.GetStatuses().Result;
             var task = new ToDo { StatusId = "open" };
             return View(task);
         }
