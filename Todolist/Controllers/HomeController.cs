@@ -14,13 +14,16 @@ namespace Todolist.Controllers
         public IActionResult Index(string id)
         {
             var temp = service.GetAll();
+            var model = new TodoModel(Category.Adventure);
+
             //var filters = new Filters(id);
             //ViewBag.Filters = filters;
             ViewBag.Categories = Enum.GetValues(typeof(Category));
             ViewBag.Statuses =  Enum.GetValues(typeof(Status));
             //ViewBag.DueFilters = Filters.DueFilterValues;
 
-            //IQueryable<ToDo> query = context.ToDoS
+            var query = service.GetAll();
+            //IQueryable<ToDo> query = service.ToDoS
             //    .Include(t => t.Category)
             //    .Include(t => t.Status);
 
@@ -61,8 +64,8 @@ namespace Todolist.Controllers
         [HttpGet]
         public IActionResult Add()
         {
-            ViewBag.Categories = context.Categories.ToList();
-            ViewBag.Statuses = context.Statuses.ToList();
+            ViewBag.Categories = service.
+            ViewBag.Statuses = service.Statuses.ToList();
             var task = new ToDo { StatusId = "open" };
             return View(task);
         }
@@ -103,13 +106,7 @@ namespace Todolist.Controllers
             return RedirectToAction("Index", new { ID = id });
         }
         
-        [HttpPost]
-        public async Task<IActionResult> MarkComplete([FromRoute] string id, ToDo selected)
-        {
-            var markedAsDone = await _todoService.MarkAsDone(int.Parse(id));
-            
-            return RedirectToAction("Index", new { ID = id });
-        }
+ 
         [HttpPost]
         public IActionResult DeleteComplete(string id)
         {

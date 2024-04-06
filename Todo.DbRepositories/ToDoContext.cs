@@ -8,8 +8,22 @@
         public ToDoContext(DbContextOptions<ToDoContext> options) : base(options) { }
 
         public DbSet<ToDo> ToDoS { get; set; } = null!;
-        public DbSet<Category> Categories { get; set; } = null!;
-        public DbSet<Status> Statuses { get; set; } = null!;
+        public class Category
+        {
+            public string CategoryId { get; set; }
+            public string Name { get; set; }
+            public string Description { get; set; }
+               
+               
+        }
+        public class Status
+        {
+            public string StatusId { get; set; }
+            public string StatusName { get; set; }
+            public string StatusDescription { get; set; }
+            public string StatusType { get; set; }
+
+        }
 
         //seed datasdfns
 
@@ -28,8 +42,8 @@
                 );
 
             modelBuilder.Entity<Status>().HasData(
-                new Status { StatusId = "open", Name = "Open" },
-                new Status { StatusId = "closed", Name = "Completed" }
+                new Status { StatusId = "open", StatusName = "Open" },
+                new Status { StatusId = "closed", StatusName = "Completed" }
                 );
         }
     }
