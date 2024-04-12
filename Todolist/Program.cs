@@ -4,7 +4,7 @@ using Todolist.Models;
 using Todolist.Repositories;
 using TodoList.Domain.Interface;
 
-namespace Todo_List
+namespace Todo.List
 {
     public class Program
     {
@@ -18,7 +18,7 @@ namespace Todo_List
             //Add EF Core Di
             builder.Services.AddDbContext<ToDoContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ToDoContext")));
             builder.Services.AddScoped<ITodoRepository, TodoStaticRepository>();
-            builder.Services.AddScoped<ITodoService, TodoService>();
+            builder.Services.AddScoped<ITodoService, TodoServiceStaticRepository>();
 
             var app = builder.Build();
 

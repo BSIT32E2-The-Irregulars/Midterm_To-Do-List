@@ -34,35 +34,31 @@
 
             <table class="table table-bordered table-striped mt-2">
                 <div class="th">
-                <thead>
-                    
+                    <thead>
                         <tr>
-                        <th>Description</th>
-                        <th>Category</th>
-                        <th>Due Date</th>
-                        <th>Status</th>
-                    </tr>
-                    
-
-                </thead>
-    </div>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                </div>
                 <tbody>
-                    @foreach (ToDo task in Model)
+                    @foreach (var task in Model)
                     {
-                        string overdue = task.Overdue ? "bg-warning" : "";
-                        <tr>
+                        string overdueClass = task.Overdue() ? "bg-warning" : "";
+                         <tr>
                             <td>@task.Description</td>
-                            <td>@task.Category.Name</td>
-                            <td class="@overdue">@task.DueDate?.ToShortDateString()</td>
-                            <td class="@overdue">@task.Status.Name</td>
+                            <td>@task.Name</td>
+                            <td class="@overdueClass">@task.DueDate</td>
+                            <td class="@overdueClass">@task.Status</td>
                             <td>
-                                @if (task.StatusId == "open")
-                            {
-                                    <button type="submit" class="btn btn-primary btn-sm"
-                                            name="@nameof(ToDo.Id)" value="@task.Id">
-                                        Mark Completed
-                                    </button>
-                                }
+                                    @if (task.StatusId == "open")
+                                    {
+                                        <button type="submit" class="btn btn-primary btn-sm" name="@nameof(ToDo.Id)" value="@task.Id">
+                                            Mark Completed
+                                        </button>
+                                    }
                             </td>
                         </tr>
                     }

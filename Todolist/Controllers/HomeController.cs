@@ -5,67 +5,41 @@ using TodoList.Domain;
 using Todolist.Models;
 using TodoList.Domain.Interface;
 
-
-namespace Todolist.Controllers
+namespace TodoList.Controllers
 {
-    public class HomeController(ITodoService service) : Controller
+    public class HomeController : Controller
     {
-        
+        private readonly ITodoService _service;
+        private readonly ToDoContext _context;
+
+        public HomeController(ITodoService service, ToDoContext context)
+        {
+            _service = service;
+            _context = context;
+        }
+
         public IActionResult Index(string id)
         {
-            var temp = service.GetAll();
+            var temp = _service.GetAll();
             var model = new TodoModel(Category.Adventure);
 
-            //var filters = new Filters(id);
-            //ViewBag.Filters = filters;
             ViewBag.Categories = Enum.GetValues(typeof(Category));
-            ViewBag.Statuses =  Enum.GetValues(typeof(Status));
-            //ViewBag.DueFilters = Filters.DueFilterValues;
+            ViewBag.Statuses = Enum.GetValues(typeof(Status));
 
-            var query = service.GetAll();
-            //IQueryable<ToDo> query = service.ToDoS
-            //    .Include(t => t.Category)
-            //    .Include(t => t.Status);
+            var query = _service.GetAll();
 
-            //if (filters.HasCategory)
-            //{
-            //    query = query.Where(t => t.CategoryId == filters.CategoryId);
-            //}
+            // Add your filtering logic here using the query variable
 
-            //if (filters.HasStatus)
-            //{
-            //    query = query.Where(t => t.StatusId == filters.StatusId);
-            //}
+            var tasks = query.OrderBy(t => t.DueDate).ToList();
 
-            //if (filters.HasDue)
-            //{
-            //    var today = DateTime.Today;
-            //    if (filters.IsPast)
-            //    {
-            //        query = query.Where(t => t.DueDate < today);
-            //    }
-            //    else if (filters.IsFuture)
-            //    {
-            //        query = query.Where(t => t.DueDate > today);
-
-            //    }
-            //    else if (filters.IsToday)
-            //    {
-            //        query = query.Where(t => t.DueDate == today);
-            //    }
-            //}
-            //var tasks = query.OrderBy(t => t.DueDate).ToList();
-
-            //return View(tasks);
-
-            return View();
+            return View(tasks);
         }
 
         [HttpGet]
         public IActionResult Add()
         {
-            ViewBag.Categories = service.GetCategories().Result;
-            ViewBag.Statuses = service.GetStatuses().Result;
+            ViewBag.Categories = _service.GetCategories().Result;
+            ViewBag.Statuses = _service.GetStatuses().Result;
             var task = new ToDo { StatusId = "open" };
             return View(task);
         }
@@ -75,14 +49,14 @@ namespace Todolist.Controllers
         {
             if (ModelState.IsValid)
             {
-                context.ToDoS.Add(task);
-                context.SaveChanges();
+                _context.ToDoS.Add(task);
+                _context.SaveChanges();
                 return RedirectToAction("Index");
             }
             else
             {
-                ViewBag.Categories = context.Categories.ToList();
-                ViewBag.Statuses = context.Statuses.ToList();
+                ViewBag.Categories = _context.Categories.ToList();
+                ViewBag.Statuses = _context.Statuses.ToList();
                 return View(task);
             }
         }
@@ -93,30 +67,30 @@ namespace Todolist.Controllers
             string id = string.Join("-", filter);
             return RedirectToAction("Index", new { ID = id });
         }
+
         [HttpPost]
         public IActionResult MarkComplete([FromRoute] string id, ToDo selected)
         {
-            selected = context.ToDoS.Find(selected.Id);
+            selected = _context.ToDoS.Find(selected.Id);
 
             if (selected != null)
             {
                 selected.StatusId = "closed";
-                context.SaveChanges();
+                _context.SaveChanges();
             }
             return RedirectToAction("Index", new { ID = id });
         }
-        
- 
+
         [HttpPost]
         public IActionResult DeleteComplete(string id)
         {
-            var toDelete = context.ToDoS.Where(t => t.StatusId == "closed").ToList();
+            var toDelete = _context.ToDoS.Where(t => t.StatusId == "closed").ToList();
 
             foreach (var task in toDelete)
             {
-                context.ToDoS.Remove(task);
+                _context.ToDoS.Remove(task);
             }
-            context.SaveChanges();
+            _context.SaveChanges();
 
             return RedirectToAction("Index", new { ID = id });
         }

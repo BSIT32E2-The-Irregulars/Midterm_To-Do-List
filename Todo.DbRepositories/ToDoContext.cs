@@ -8,6 +8,8 @@
         public ToDoContext(DbContextOptions<ToDoContext> options) : base(options) { }
 
         public DbSet<ToDo> ToDoS { get; set; } = null!;
+        public DbSet<Category> Categories { get; set; } // Add this property
+        public DbSet<Status> Statuses { get; set; } // Add this property
         public class Category
         {
             public string CategoryId { get; set; }
